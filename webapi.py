@@ -5,7 +5,7 @@ def create_flask():
 
     @app.route("/")
     def on_home():
-        return "Hello World"
+        return flask.send_file("html/index.html")
 
 
     return app
