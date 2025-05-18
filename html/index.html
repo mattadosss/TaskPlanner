@@ -5,10 +5,62 @@
     <title>Title</title>
 </head>
 <body>
-    <h1>Task Planner with Flask and Mysql</h1>
-    <h2></h2>
-</body>
-<script>
-    addEventListener(onDOM)
-</script>
+        <h1>Blog</h1>
+        <input type="button" value="refresh" id="refreshButton">
+        <div id="posts"></div>
+    </body>
+    <script>
+         // fetch("https://jsonplaceholder.typicode.com/posts").then(response => response.json()).then();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+
+            const blogdiv = document.getElementById('posts')
+            const refreshButton = document.getElementById('refreshButton')
+
+
+            function renderTaskList(tasks) {
+                blogdiv.replaceChildren();  // Clear the container
+
+                tasks.forEach(task => {
+                    console.log(task);
+
+                    const taskContainer = document.createElement('div');
+                    taskContainer.classList.add('task');
+
+                    const title = document.createElement('h2');
+                    title.innerText = task.Titel;
+
+                    const status = document.createElement('p');
+                    status.innerText = `Erledigt: ${task.erledigt ? 'Ja' : 'Nein'}`;
+
+                    const description = document.createElement('p');
+                    description.innerText = `Beschreibung: ${task.Beschreibung}`;
+
+                    const datetime = document.createElement('p');
+                    datetime.innerText = `Datum & Uhrzeit: ${task.DatumUhrzeit}`;
+
+                    taskContainer.appendChild(title);
+                    taskContainer.appendChild(status);
+                    taskContainer.appendChild(description);
+                    taskContainer.appendChild(datetime);
+
+                    blogdiv.appendChild(taskContainer);
+                });
+            }
+
+
+            async function loadBlogPost() {
+                const url = "/api_get_tasks";
+            let result = await fetch(url);
+            let task = await result.json();
+            renderTaskList(task);
+            }
+
+            loadBlogPost();
+            refreshButton.addEventListener('click', loadBlogPost)
+        });
+
+
+    </script>
+</html>
 </html>
