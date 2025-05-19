@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Get Task</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+
+<body>
+<main>
+    <h1>Get Task</h1>
+    <input type="button" value="refresh" id="refreshButton">
+    <a href="/">get Back</a>
+    <form id="task_form" action="#" method="GET">
+        <input type="text" name="task_id" placeholder="ID" id="task_id">
+        <input type="submit" value="Load Task">
+    </form>
+
+    <br></br>
+    <div id="tasks"></div>
+</main>
+
+</body>
+<script>
+
+    document.addEventListener('DOMContentLoaded', async () => {
+
+        const taskdiv = document.getElementById('tasks')
+        const refreshButton = document.getElementById('refreshButton')
+        const taskform = document.forms.task_form;
+
+        function renderTaskList(tasks) {
+            taskdiv.replaceChildren();  // Clear the container
+
+            tasks.forEach(task => {
+                console.log(task);
+
+                const taskContainer = document.createElement('div');
+                taskContainer.classList.add('task');
+
+                const title = document.createElement('h2');
+                title.innerText = task.Titel;
+
+                const status = document.createElement('p');
+                status.innerText = `Erledigt: ${task.erledigt ? 'Ja' : 'Nein'}`;
+
+                const description = document.createElement('p');
+                description.innerText = `Beschreibung: ${task.Beschreibung}`;
+
+                const datetime = document.createElement('p');
+                datetime.innerText = `Datum & Uhrzeit: ${task.DatumUhrzeit}`;
+
+                taskContainer.appendChild(title);
+                taskContainer.appendChild(status);
+                taskContainer.appendChild(description);
+                taskContainer.appendChild(datetime);
+
+                taskdiv.appendChild(taskContainer);
+            });
+        }
+
+        taskform.addEventListener('submit', async (event) => {
+            event.preventDefault();  // prevent page reload
+
+            const form = document.getElementById("task_form");
+            const form_data = new FormData(form);
+
+            const taskId = form_data.get("task_id");  // get the entered ID
+
+
+            await loadTask(taskId);  // pass the ID to loadTask
+        });
+
+
+        async function loadTask(id) {
+            const url = `/api_get_task?id=${id}`;
+            let result = await fetch(url);
+            let task = await result.json();
+            console.log(task)
+            renderTaskList([task]);
+        }
+
+        loadTask();
+        refreshButton.addEventListener('click', loadTask)
+    });
+
+
+</script>
+</html>
+</html>

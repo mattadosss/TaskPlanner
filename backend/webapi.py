@@ -1,6 +1,7 @@
 import flask
 from flask import request
-import db_handler
+from backend import db_handler
+
 
 def create_flask():
     app = flask.Flask(__name__)
@@ -8,7 +9,11 @@ def create_flask():
 
     @app.route("/")
     def on_home():
-        return flask.send_file("html/index.html")
+        return flask.send_file("../templates/index.html")
+
+    @app.route("/get_task")
+    def on_get_task():
+        return flask.send_file("../templates/get_task.html")
 
     @app.route("/api_get_tasks")
     def api_get_tasks():
