@@ -28,10 +28,20 @@ def get_task(id):
     result = session.execute(sa.text("SElECT * FROM task WHERE task.Task_ID =" + id))
     row = result.fetchone()
 
+    if row is None:
+        no_entry_json = {
+            "Titel": f'Task with ID {id} not found',
+            "erledigt": "",
+            "Beschreibung": "",
+            "DatumUhrzeit": ""
+        }
+        return no_entry_json
+
     json_data = dict(row._mapping)
 
     # Convert to JSON string (if needed)
     json_string = json.dumps(json_data, indent=2, default=str)
+
 
     return json_string
 
