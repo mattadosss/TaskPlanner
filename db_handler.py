@@ -41,9 +41,34 @@ def get_task(id):
 
     # Convert to JSON string (if needed)
     json_string = json.dumps(json_data, indent=2, default=str)
-
-
     return json_string
+
+def create_task(erledigt, titel, beschreibung, datumUhrzeit):
+    query = sa.text("""
+            INSERT INTO Task (erledigt, Titel, Beschreibung, DatumUhrzeit)
+            values (
+                :erledigt,
+                :titel,
+                :beschreibung,
+                :datumUhrzeit
+           )
+        """)
+
+    session.execute(query, {
+        'erledigt': erledigt,
+        'titel': titel,
+        'beschreibung': beschreibung,
+        'datumUhrzeit': datumUhrzeit
+    })
+
+    answer = {
+            "Titel": f'{titel}',
+            "erledigt": f'{erledigt}',
+            "Beschreibung": f'{beschreibung}',
+            "DatumUhrzeit": f'{datumUhrzeit}'
+        }
+    return answer
+
 
 
 

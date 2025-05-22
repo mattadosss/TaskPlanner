@@ -11,6 +11,7 @@
     <h1>Tasks</h1>
     <input type="button" value="refresh" id="refreshButton">
     <a href="/get_task">get task per ID</a>
+    <a href="/create_task">create task</a>
     <br></br>
     <div id="tasks"></div>
 </main>
@@ -65,6 +66,7 @@
             const url = "/api_get_tasks";
             let result = await fetch(url);
             let task = await result.json();
+            console.log(task)
             renderTaskList(task);
         }
 

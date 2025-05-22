@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Task</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+
+<body>
+<main>
+    <h1>Create Task</h1>
+    <input type="button" value="refresh" id="refreshButton">
+    <a href="/">get Back</a>
+    <form id="task_form" action="#" method="GET">
+        <label>
+            <input type="checkbox" name="erledigt" id="erledigt">
+            Erledigt
+        </label><br>
+
+        <input type="text" name="Titel" placeholder="Titel" id="Titel"><br>
+        <input type="text" name="Beschreibung" placeholder="Beschreibung" id="Beschreibung"><br>
+        <input type="text" name="DatumUhrzeit" placeholder="DatumUhrzeit" id="DatumUhrzeit"><br>
+
+        <input type="submit" value="Load Task">
+    </form>
+
+    <br></br>
+    <div id="tasks"></div>
+</main>
+
+</body>
+<script>
+
+    document.addEventListener('DOMContentLoaded', async () => {
+
+        const taskdiv = document.getElementById('tasks')
+        const refreshButton = document.getElementById('refreshButton')
+        const taskform = document.forms.task_form;
+
+        function renderTaskList(tasks) {
+            taskdiv.replaceChildren();  // Clear the container
+
+            tasks.forEach(task => {
+                console.log(task);
+
+                const taskContainer = document.createElement('div');
+                taskContainer.classList.add('task');
+
+                const title = document.createElement('h2');
+                title.innerText = task.Titel;
+
+                const status = document.createElement('p');
+                status.innerText = `Erledigt: ${task.erledigt ? 'Ja' : 'Nein'}`;
+
+                const description = document.createElement('p');
+                description.innerText = `Beschreibung: ${task.Beschreibung}`;
+
+                const datetime = document.createElement('p');
+                datetime.innerText = `Datum & Uhrzeit: ${task.DatumUhrzeit}`;
+
+                taskContainer.appendChild(title);
+                taskContainer.appendChild(status);
+                taskContainer.appendChild(description);
+                taskContainer.appendChild(datetime);
+
+                taskdiv.appendChild(taskContainer);
+            });
+        }
+
+        taskform.addEventListener('submit', async (event) => {
+            event.preventDefault();  // prevent page reload
+
+            const form = document.getElementById("task_form");
+            const form_data = new FormData(form);
+
+            //const taskId = form_data.get("task_id");  // get the entered ID
+            const erledigt = form_data.get("erledigt") ? 1 : 0;
+            const Titel = form_data.get("Titel");
+            const Beschreibung = form_data.get("Beschreibung");
+            const DatumUhrzeit = form_data.get("DatumUhrzeit");
+
+            await loadTask(erledigt, Titel, Beschreibung, DatumUhrzeit);  // pass the ID to loadTask
+        });
+
+
+        async function loadTask(erledigt, Titel, Beschreibung, DatumUhrzeit) {
+            const formData = new FormData();
+            formData.append("erledigt", erledigt);
+            formData.append("Titel", Titel);
+            formData.append("beschreibung", Beschreibung);
+            formData.append("DatumUhrzeit", DatumUhrzeit);
+
+            console.log(formData)
+
+            const response = await fetch("/api_create_task", {
+                method: "POST",
+                body: formData
+            });
+
+            const task = await response.json();
+            console.log(task);
+            renderTaskList([task]);
+        }
+
+        //loadTask();
+        refreshButton.addEventListener('click', loadTask)
+    });
+
+
+</script>
+</html>
+</html>
