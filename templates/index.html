@@ -35,10 +35,10 @@
                 const taskContainer = document.createElement('div');
                 taskContainer.classList.add('task');
 
-                taskContainer.style.cursor = 'pointer';
-                taskContainer.onclick = () => {
-                    loadoneTask(task.Task_ID);
-                };
+                //taskContainer.style.cursor = 'pointer';
+                //taskContainer.onclick = () => {
+                  //  loadoneTask(task.Task_ID);
+                //};
 
                 const title = document.createElement('h2');
                 title.innerText = task.Titel;
@@ -52,10 +52,30 @@
                 const datetime = document.createElement('p');
                 datetime.innerText = `Datum & Uhrzeit: ${task.DatumUhrzeit}`;
 
+                const deleteButton = document.createElement("button");
+                deleteButton.innerText = "Delete Task";
+
+                deleteButton.onclick = async () => {
+                    const url = `/api_delete_task?id=${task.Task_ID}`;
+                    try {
+                        const response = await fetch(url, {method: 'DELETE'});
+                        if (response.ok) {
+                            console.log("Task deleted");
+                            loadBlogPost();  // Refresh the task list, assuming this function exists
+                        } else {
+                            console.error("Failed to delete task");
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                    }
+                };
+
+
                 taskContainer.appendChild(title);
                 taskContainer.appendChild(status);
                 taskContainer.appendChild(description);
                 taskContainer.appendChild(datetime);
+                taskContainer.appendChild(deleteButton)
 
                 taskdiv.appendChild(taskContainer);
             });

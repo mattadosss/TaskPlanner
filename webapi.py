@@ -39,5 +39,11 @@ def create_flask():
         result = db_handler.create_task(erledigt, titel, beschreibung, datumUhrzeit)
         return jsonify(result)
 
+    @app.route("/api_delete_task",  methods=['DELETE'])
+    def api_delete_task():
+        args = request.args
+        id = args.get("id")
+        result = db_handler.delete_task(id)
+        return jsonify(result)
 
     return app

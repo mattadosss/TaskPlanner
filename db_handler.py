@@ -17,7 +17,6 @@ session = Session()
 def get_tasks():
     result = session.execute(sa.text("SELECT * FROM task"))
     rows = result.fetchall()
-
     json_data = [dict(row._mapping) for row in rows]
 
     # Convert to JSON string (if needed)
@@ -27,7 +26,6 @@ def get_tasks():
 def get_task(id):
     result = session.execute(sa.text("SElECT * FROM task WHERE task.Task_ID =" + id))
     row = result.fetchone()
-
     if row is None:
         no_entry_json = {
             "Titel": f'Task with ID {id} not found',
@@ -54,12 +52,14 @@ def create_task(erledigt, titel, beschreibung, datumUhrzeit):
            )
         """)
 
-    session.execute(query, {
+    sess = session.execute(query, {
         'erledigt': erledigt,
         'titel': titel,
         'beschreibung': beschreibung,
         'datumUhrzeit': datumUhrzeit
     })
+
+    session.commit()
 
     answer = {
             "Titel": f'{titel}',
@@ -69,7 +69,29 @@ def create_task(erledigt, titel, beschreibung, datumUhrzeit):
         }
     return answer
 
+def delete_task(id):
+    print(id)
 
+    try:
+        # Use a raw SQL DELETE statement
+        session.execute(sa.text("DELETE FROM task WHERE Task_ID = :task_id"), {'task_id': id})
+        session.commit()  # Commit the transaction
+    except Exception as e:
+        session.rollback()  # Rollback in case of error
+        print(f"Error deleting task: {e}")
 
+    if id is None:
+        no_entry_json = {
+            "Titel": f'Task with ID {id} not found',
+            "erledigt": "",
+            "Beschreibung": "",
+            "DatumUhrzeit": ""
+        }
+        return no_entry_json
+    else:
+        return {
+            "success": True,
+            "message": f"Task with ID {id} was deleted."
+        }
 
 
