@@ -12,7 +12,7 @@
     <input type="button" value="refresh" id="refreshButton">
     <a href="/">get Back</a>
     <form id="task_form" action="#" method="GET">
-        <input type="text" name="task_id" placeholder="ID" id="task_id">
+        <input type="text" name="task_id" placeholder="Title" id="task_id">
         <input type="submit" value="Load Task">
     </form>
 
@@ -77,10 +77,12 @@
             let result = await fetch(url);
             let task = await result.json();
             console.log(task)
-            renderTaskList([task]);
+            console.log(task.length)
+            if (task.length > 1){renderTaskList(task);}
+            else {renderTaskList([task]);}
         }
 
-        loadTask();
+        //loadTask();
         refreshButton.addEventListener('click', loadTask)
     });
 

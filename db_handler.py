@@ -24,22 +24,28 @@ def get_tasks():
 
     return json_string
 def get_task(id):
-    result = session.execute(sa.text("SElECT * FROM task WHERE task.Task_ID =" + id))
-    row = result.fetchone()
-    if row is None:
-        no_entry_json = {
-            "Titel": f'Task with ID {id} not found',
+    # Use parameterized LIKE query to prevent SQL injection
+    query = sa.text('SELECT * FROM task WHERE task.Titel LIKE :pattern')
+    result = session.execute(query, {'pattern': f"%{id}%"})
+    rows = result.fetchall()
+
+    # If no results found
+    if not rows:
+        return {
+            "Titel": f'Task with ID "{id}" not found',
             "erledigt": "",
             "Beschreibung": "",
             "DatumUhrzeit": ""
         }
-        return no_entry_json
 
-    json_data = dict(row._mapping)
+    # Convert rows to JSON
+    if len(rows) > 1:
+        json_data = [dict(row._mapping) for row in rows]
+    else:
+        json_data = dict(rows[0]._mapping)
 
-    # Convert to JSON string (if needed)
-    json_string = json.dumps(json_data, indent=2, default=str)
-    return json_string
+    return json.dumps(json_data, indent=2, default=str)
+
 
 def create_task(erledigt, titel, beschreibung, datumUhrzeit):
     query = sa.text("""
