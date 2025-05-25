@@ -12,6 +12,7 @@
     <input type="button" value="refresh" id="refreshButton">
     <a href="/get_task">get task per Title</a>
     <a href="/create_task">create task</a>
+    <input type="button" value="order by date" id="datebutton">
     <br></br>
     <div id="tasks"></div>
 </main>
@@ -24,7 +25,7 @@
 
         const taskdiv = document.getElementById('tasks')
         const refreshButton = document.getElementById('refreshButton')
-
+        const datebutton = document.getElementById("datebutton")
 
         function renderTaskList(tasks) {
             taskdiv.replaceChildren();  // Clear the container
@@ -90,6 +91,15 @@
             renderTaskList(task);
         }
 
+        async function taskBydate() {
+            const url = "/api_get_tasks_by_date";
+            let result = await fetch(url);
+            let task = await result.json();
+            console.log(task)
+            renderTaskList(task);
+        }
+
+
         async function loadoneTask(id) {
             const url = `/api_get_task?id=${id}`;
             console.log(url)
@@ -101,6 +111,7 @@
 
         loadBlogPost();
         refreshButton.addEventListener('click', loadBlogPost)
+        datebutton.addEventListener("click", taskBydate)
     });
 
 

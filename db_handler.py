@@ -101,3 +101,36 @@ def delete_task(id):
         }
 
 
+def get_task_by_date(date_string):
+    query = sa.text('''
+        SELECT * FROM task
+        WHERE DATE(task.DatumUhrzeit) = :date
+        ORDER BY task.DatumUhrzeit ASC
+    ''')
+    result = session.execute(query, {'date': date_string})
+    rows = result.fetchall()
+
+    if not rows:
+        return {
+            "message": f'No tasks found for date "{date_string}".',
+            "tasks": []
+        }
+
+    json_data = [dict(row._mapping) for row in rows]
+    return json.dumps(json_data, indent=2, default=str)
+
+
+def get_tasks_order_by_date():
+    query = sa.text('''
+        SELECT * FROM task
+        ORDER BY task.DatumUhrzeit ASC
+    ''')
+    result = session.execute(query)
+    rows = result.fetchall()
+
+
+    json_data = [dict(row._mapping) for row in rows]
+    return json.dumps(json_data, indent=2, default=str)
+
+
+

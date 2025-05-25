@@ -23,6 +23,10 @@ def create_flask():
     def api_get_tasks():
         return db_handler.get_tasks()
 
+    @app.route("/api_get_tasks_by_date")
+    def api_get_tasks_by_date():
+        return db_handler.get_tasks_order_by_date()
+
     @app.route("/api_get_task", methods=['GET'])
     def api_get_task():
         args = request.args
