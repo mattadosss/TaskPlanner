@@ -73,7 +73,7 @@
 
 
         async function loadTask(id) {
-            const url = `/api_get_task_by_title?id=${id}`;
+            const url = `/api_get_task_by_title?title=${id}`;
             let result = await fetch(url);
             let task = await result.json();
             console.log(task)
@@ -88,5 +88,4 @@
 
 
 </script>
-</html>
 </html>

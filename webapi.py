@@ -32,10 +32,16 @@ def create_flask():
         return db_handler.get_tasks_order_by_date()
 
     @app.route("/api_get_task_by_title", methods=['GET'])
-    def api_get_task():
+    def api_get_task_by_title():
+        args = request.args
+        title = args.get("title")
+        return db_handler.get_task_by_title(title)
+
+    @app.route("/api_get_task_by_id", methods=['GET'])
+    def api_get_task_by_id():
         args = request.args
         id = args.get("id")
-        return db_handler.get_task(id)
+        return db_handler.get_task_by_id(id)
 
     @app.route("/api_create_task", methods=['POST'])
     def api_create_task():
