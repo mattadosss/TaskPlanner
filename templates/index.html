@@ -41,14 +41,35 @@
 
                 //taskContainer.style.cursor = 'pointer';
                 //taskContainer.onclick = () => {
-                  //  loadoneTask(task.Task_ID);
+                //  loadoneTask(task.Task_ID);
                 //};
 
                 const title = document.createElement('h2');
                 title.innerText = task.Titel;
 
-                const status = document.createElement('p');
-                status.innerText = `Erledigt: ${task.erledigt ? 'Ja' : 'Nein'}`;
+                const label = document.createElement("label");
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.name = "erledigt";
+                checkbox.id = "erledigt";
+                if (task.erledigt === 1) {
+                    checkbox.checked = true
+                }
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked === true) {
+                        const url = `/api_done_task?id=${task.Task_ID}&erledigt=1`;
+                        let result = fetch(url);
+                        //let task = result.json();
+                    }
+                    else {
+                        const url = `/api_done_task?id=${task.Task_ID}&erledigt=0`;
+                        let result = fetch(url);
+                    }
+                });
+
+                const labelText = document.createTextNode(" Erledigt");
+                label.appendChild(checkbox);
+                label.appendChild(labelText);
 
                 const description = document.createElement('p');
                 description.innerText = `Beschreibung: ${task.Beschreibung}`;
@@ -83,7 +104,7 @@
 
 
                 taskContainer.appendChild(title);
-                taskContainer.appendChild(status);
+                taskContainer.appendChild(label);
                 taskContainer.appendChild(description);
                 taskContainer.appendChild(datetime);
                 taskContainer.appendChild(deleteButton)

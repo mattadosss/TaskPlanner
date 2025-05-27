@@ -75,4 +75,15 @@ def create_flask():
         print(titel)
         result = db_handler.update_task(id, erledigt, titel, beschreibung, datumUhrzeit)
         return jsonify(result)
+
+    @app.route("/api_done_task")
+    def api_done_task():
+        args = request.args
+        id = args.get("id")
+        erledigt = args.get("erledigt")
+        print(id, erledigt)
+        result = db_handler.done_task(id, erledigt)
+        return jsonify(result)
+
+
     return app

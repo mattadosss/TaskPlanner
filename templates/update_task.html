@@ -21,7 +21,7 @@
         <input type="text" name="Beschreibung" placeholder="Beschreibung" id="Beschreibung"><br>
         <input type="datetime-local" name="DatumUhrzeit" placeholder="DatumUhrzeit" id="DatumUhrzeit"><br>
 
-        <input type="submit" value="Load Task">
+        <input type="submit" value="Save">
     </form>
 
     <br></br>
@@ -101,6 +101,7 @@
             const task = await response.json();
             console.log(task);
             renderTaskList([task]);
+            window.location.href = "/"
         }
 
         async function loadValues(){

@@ -209,4 +209,22 @@ def get_tasks_order_by_date():
     return json.dumps(json_data, indent=2, default=str)
 
 
+def done_task(id, erledigt):
+    query = sa.text("""
+                UPDATE task
+                SET 
+                erledigt = :erledigt
+                WHERE Task_ID = :id;
 
+            """)
+
+    sess = session.execute(query, {'erledigt': erledigt, 'id': id})
+
+    # print(sess)
+
+    session.commit()
+
+    answer = {
+        "Titel": f'{id}'
+    }
+    return answer
