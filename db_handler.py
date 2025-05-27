@@ -75,6 +75,39 @@ def create_task(erledigt, titel, beschreibung, datumUhrzeit):
         }
     return answer
 
+
+def update_task(id, erledigt, titel, beschreibung, datumUhrzeit):
+    query = sa.text("""
+            UPDATE task
+            SET 
+            erledigt = :erledigt,
+            Titel = :titel,
+            Beschreibung = :beschreibung,
+            DatumUhrzeit = :datumUhrzeit
+            WHERE Task_ID = :id;
+           
+        """)
+
+    sess = session.execute(query, {
+        'erledigt': erledigt,
+        'titel': titel,
+        'beschreibung': beschreibung,
+        'datumUhrzeit': datumUhrzeit,
+        'id': id
+    })
+
+    #print(sess)
+
+    session.commit()
+
+    answer = {
+            "Titel": f'{titel}',
+            "erledigt": f'{erledigt}',
+            "Beschreibung": f'{beschreibung}',
+            "DatumUhrzeit": f'{datumUhrzeit}'
+        }
+    return answer
+
 def delete_task(id):
     print(id)
 

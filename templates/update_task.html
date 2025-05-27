@@ -2,17 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Get Task</title>
+    <title>Create Task</title>
     <link rel="stylesheet" href="../static/style.css">
 </head>
 
 <body>
 <main>
-    <h1>Get Task</h1>
+    <h1>Create Task</h1>
     <input type="button" value="refresh" id="refreshButton">
     <a href="/">get Back</a>
     <form id="task_form" action="#" method="GET">
-        <input type="text" name="title" placeholder="Title" id="title">
+        <label>
+            <input type="checkbox" name="erledigt" id="erledigt">
+            Erledigt
+        </label><br>
+        <input type="text" name="id" placeholder="id" id="id"><br>
+        <input type="text" name="Titel" placeholder="Titel" id="Titel"><br>
+        <input type="text" name="Beschreibung" placeholder="Beschreibung" id="Beschreibung"><br>
+        <input type="datetime-local" name="DatumUhrzeit" placeholder="DatumUhrzeit" id="DatumUhrzeit"><br>
+
         <input type="submit" value="Load Task">
     </form>
 
@@ -65,26 +73,51 @@
             const form = document.getElementById("task_form");
             const form_data = new FormData(form);
 
-            const taskId = form_data.get("title");  // get the entered ID
+            const id = form_data.get("id");  // get the entered ID
+            const erledigt = form_data.get("erledigt") ? 1 : 0;
+            const Titel = form_data.get("Titel");
+            const Beschreibung = form_data.get("Beschreibung");
+            const DatumUhrzeit = form_data.get("DatumUhrzeit");
 
-
-            await loadTask(taskId);  // pass the ID to loadTask
+            await loadTask(id, erledigt, Titel, Beschreibung, DatumUhrzeit);  // pass the ID to loadTask
         });
 
 
-        async function loadTask(id) {
-            const url = `/api_get_task_by_title?id=${id}`;
-            let result = await fetch(url);
-            let task = await result.json();
-            console.log(task)
-            console.log(task.length)
-            if (task.length > 1){renderTaskList(task);}
-            else {renderTaskList([task]);}
+        async function loadTask(id, erledigt, Titel, Beschreibung, DatumUhrzeit) {
+            const formData = new FormData();
+            formData.append("id", id);
+            formData.append("erledigt", erledigt);
+            formData.append("Titel", Titel);
+            formData.append("beschreibung", Beschreibung);
+            formData.append("DatumUhrzeit", DatumUhrzeit);
+
+            console.log(formData)
+
+            const response = await fetch("/api_update_task", {
+                method: "PUT",
+                body: formData
+            });
+
+            const task = await response.json();
+            console.log(task);
+            renderTaskList([task]);
+        }
+
+        async function loadValues(){
+            const form = document.getElementById("task_form");
+            const form_data = new FormData(form);
+
+            //const taskId = form_data.get("task_id");  // get the entered ID
+            const erledigt = form_data.get("erledigt") ? 1 : 0;
+            const Titel = form_data.get("Titel");
+            const Beschreibung = form_data.get("Beschreibung");
+            const DatumUhrzeit = form_data.get("DatumUhrzeit");
         }
 
         //loadTask();
         refreshButton.addEventListener('click', loadTask)
     });
+
 
 
 </script>

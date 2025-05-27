@@ -19,6 +19,10 @@ def create_flask():
     def on_create_task():
         return flask.render_template("create_task.html")
 
+    @app.route("/update_task")
+    def on_update_task():
+        return flask.render_template("update_task.html")
+
     @app.route("/api_get_tasks")
     def api_get_tasks():
         return db_handler.get_tasks()
@@ -27,7 +31,7 @@ def create_flask():
     def api_get_tasks_by_date():
         return db_handler.get_tasks_order_by_date()
 
-    @app.route("/api_get_task", methods=['GET'])
+    @app.route("/api_get_task_by_title", methods=['GET'])
     def api_get_task():
         args = request.args
         id = args.get("id")
@@ -49,5 +53,16 @@ def create_flask():
         id = args.get("id")
         result = db_handler.delete_task(id)
         return jsonify(result)
-
+    @app.route("/api_update_task", methods=['PUT'])
+    def api_update_task():
+        id = request.form.get("id")
+        erledigt = request.form.get("erledigt")
+        titel = request.form.get("Titel")
+        beschreibung = request.form.get("beschreibung")
+        datumUhrzeit = request.form.get("DatumUhrzeit")
+        print(id)
+        print(erledigt)
+        print(titel)
+        result = db_handler.update_task(id, erledigt, titel, beschreibung, datumUhrzeit)
+        return jsonify(result)
     return app
