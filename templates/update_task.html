@@ -15,7 +15,7 @@
         <label>
             <input type="checkbox" name="erledigt" id="erledigt">
             Erledigt
-        </label><br>
+        </label>
         <input type="text" name="id" placeholder="id" id="id"><br>
         <input type="text" name="Titel" placeholder="Titel" id="Titel"><br>
         <input type="text" name="Beschreibung" placeholder="Beschreibung" id="Beschreibung"><br>
@@ -104,17 +104,32 @@
         }
 
         async function loadValues(){
-            const form = document.getElementById("task_form");
-            const form_data = new FormData(form);
 
-            //const taskId = form_data.get("task_id");  // get the entered ID
-            const erledigt = form_data.get("erledigt") ? 1 : 0;
-            const Titel = form_data.get("Titel");
-            const Beschreibung = form_data.get("Beschreibung");
-            const DatumUhrzeit = form_data.get("DatumUhrzeit");
+            const task_id = sessionStorage.getItem("Task_to_update_id")
+            console.log(task_id)
+            const url = `/api_get_task_by_id?id=${task_id}`;
+            let result = await fetch(url);
+            let task = await result.json();
+            console.log(task)
+
+            const id = document.getElementById('id');
+            id.value = task_id;
+            id.style.display = "none"
+
+            const title = document.getElementById('Titel');
+            title.value = task.Titel;
+
+            const status = document.getElementById('erledigt');
+            status.value = `Erledigt: ${task.erledigt ? 'Ja' : 'Nein'}`;
+
+            const description = document.getElementById('Beschreibung');
+            description.value = task.Beschreibung;
+
+            const datetime = document.getElementById('DatumUhrzeit');
+            datetime.value = task.DatumUhrzeit;
         }
 
-        //loadTask();
+        loadValues();
         refreshButton.addEventListener('click', loadTask)
     });
 

@@ -71,6 +71,13 @@
                         console.error("Error:", error);
                     }
                 };
+                const updateButton = document.createElement("button");
+                updateButton.innerText = "update Task";
+
+                updateButton.onclick = async () => {
+                    sessionStorage.setItem("Task_to_update_id", task.Task_ID)
+                    window.location.href = "/update_task"
+                };
 
 
                 taskContainer.appendChild(title);
@@ -78,6 +85,7 @@
                 taskContainer.appendChild(description);
                 taskContainer.appendChild(datetime);
                 taskContainer.appendChild(deleteButton)
+                taskContainer.appendChild(updateButton)
 
                 taskdiv.appendChild(taskContainer);
             });
