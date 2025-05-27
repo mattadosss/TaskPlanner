@@ -9,12 +9,22 @@
 <body>
 <main>
     <h1>Tasks</h1>
-    <input type="button" value="refresh" id="refreshButton">
-    <a href="/get_task">get task per Title</a>
-    <a href="/create_task">create task</a>
-    <a href="/update_task">update task</a>
-    <input type="button" value="order by date" id="datebutton">
-    <input type="button" value="undone Tasks" id="undone">
+    <div class="task-controls">
+        <div class="task-links">
+            <p>Links:</p>
+            <a href="/get_task">get task per Title</a>
+            <a href="/create_task">create task</a>
+        </div>
+
+        <div class="task-functions">
+            <p>Functions:</p>
+            <input type="button" value="refresh" id="refreshButton">
+            <input type="button" value="order by date" id="datebutton">
+            <input type="button" value="undone Tasks" id="undone">
+        </div>
+    </div>
+
+
     <br></br>
     <div id="tasks"></div>
 </main>
@@ -60,8 +70,7 @@
                         const url = `/api_done_task?id=${task.Task_ID}&erledigt=1`;
                         let result = fetch(url);
                         //let task = result.json();
-                    }
-                    else {
+                    } else {
                         const url = `/api_done_task?id=${task.Task_ID}&erledigt=0`;
                         let result = fetch(url);
                     }

@@ -81,7 +81,7 @@ def create_flask():
         args = request.args
         id = args.get("id")
         erledigt = args.get("erledigt")
-        print(id, erledigt)
+        #print(id, erledigt)
         result = db_handler.done_task(id, erledigt)
         return jsonify(result)
 

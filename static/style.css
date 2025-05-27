@@ -2,58 +2,147 @@
 body {
     background-color: #FFEED3;
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 main {
     margin: auto;
     width: 90%;
-    max-width: 600px;
-    padding: 20px;
+    max-width: 700px;
+    padding: 30px 20px;
 }
 
 /* Task card styling */
 .task {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 15px;
-    margin: 10px 0;
-    border-bottom: 2px solid deeppink;
+    gap: 10px;
+    padding: 20px;
+    margin: 12px 0;
+    border-left: 6px solid deeppink;
     background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.task:hover {
+    transform: scale(1.01);
+}
+
+.task h2 {
+    font-size: 1.25rem;
+    margin: 0;
+    color: #333;
+}
+
+.task p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #555;
 }
 
 #tasks {
     background-color: #FFFEFD;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    padding: 10px;
+    gap: 20px;
+    padding: 15px;
     border-radius: 20px;
+}
+
+/* Buttons */
+.task button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background-color: #ff69b4;
+    color: white;
+    transition: background-color 0.2s ease;
+}
+
+.task button:hover {
+    background-color: #ff3e96;
+}
+
+/* Checkbox label */
+.task label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: bold;
+    font-size: 0.95rem;
 }
 
 /* Responsive enhancements */
 @media (min-width: 768px) {
     main {
-        width: 60%;
+        width: 70%;
     }
 
     .task {
         flex-direction: row;
+        flex-wrap: wrap;
         justify-content: space-between;
         align-items: center;
     }
 
     .task > * {
-        flex: 1;
-        margin: 0 10px;
+        flex: 1 1 45%;
+        margin: 6px 0;
+    }
+
+    .task button {
+        flex: 0 0 auto;
     }
 }
 
+.task-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.task-links,
+.task-functions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.task-controls a,
+.task-controls input[type="button"] {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    text-decoration: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    cursor: pointer;
+}
+
+.task-controls a:hover,
+.task-controls input[type="button"]:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.03);
+}
+
+.task-controls a {
+    color: #5c1d91;
+    font-weight: bold;
+}
+
+
+
 @media (min-width: 1024px) {
     main {
-        width: 40%;
+        width: 50%;
     }
 }
