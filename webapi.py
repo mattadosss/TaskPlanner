@@ -31,6 +31,10 @@ def create_flask():
     def api_get_tasks_by_date():
         return db_handler.get_tasks_order_by_date()
 
+    @app.route("/api_get_undone_tasks")
+    def api_get_erledigt():
+        return db_handler.get_undone_tasks()
+
     @app.route("/api_get_task_by_title", methods=['GET'])
     def api_get_task_by_title():
         args = request.args

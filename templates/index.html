@@ -14,6 +14,7 @@
     <a href="/create_task">create task</a>
     <a href="/update_task">update task</a>
     <input type="button" value="order by date" id="datebutton">
+    <input type="button" value="undone Tasks" id="undone">
     <br></br>
     <div id="tasks"></div>
 </main>
@@ -27,6 +28,7 @@
         const taskdiv = document.getElementById('tasks')
         const refreshButton = document.getElementById('refreshButton')
         const datebutton = document.getElementById("datebutton")
+        const undone = document.getElementById("undone")
 
         function renderTaskList(tasks) {
             taskdiv.replaceChildren();  // Clear the container
@@ -109,18 +111,19 @@
         }
 
 
-        async function loadoneTask(id) {
-            const url = `/api_get_task?id=${id}`;
+        async function undone_tasks() {
+            const url = `/api_get_undone_tasks`;
             console.log(url)
             let result = await fetch(url);
             let task = await result.json();
             console.log(task)
-            renderTaskList([task]);
+            renderTaskList(task);
         }
 
         loadBlogPost();
         refreshButton.addEventListener('click', loadBlogPost)
         datebutton.addEventListener("click", taskBydate)
+        undone.addEventListener("click", undone_tasks)
     });
 
 

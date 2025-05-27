@@ -177,6 +177,25 @@ def get_task_by_date(date_string):
     return json.dumps(json_data, indent=2, default=str)
 
 
+
+def get_undone_tasks():
+    query = sa.text('''
+        SELECT * FROM task
+        WHERE erledigt = 0;
+    ''')
+    result = session.execute(query)
+    rows = result.fetchall()
+
+    if not rows:
+        return {
+            "message": f'All tasks done.',
+            "tasks": []
+        }
+
+    json_data = [dict(row._mapping) for row in rows]
+    return json.dumps(json_data, indent=2, default=str)
+
+
 def get_tasks_order_by_date():
     query = sa.text('''
         SELECT * FROM task
