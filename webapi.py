@@ -1,6 +1,8 @@
 import flask
 from flask import request, jsonify
 import db_handler
+from datetime import datetime
+import json
 
 
 def create_flask():
@@ -85,5 +87,19 @@ def create_flask():
         result = db_handler.done_task(id, erledigt)
         return jsonify(result)
 
+    @app.route("/api_upcoming_tasks", methods=["GET"])
+    def upcoming_tasks():
+        now = datetime.now()
+
+        raw_tasks = db_handler.get_tasks()
+        tasks = json.loads(raw_tasks) if isinstance(raw_tasks, str) else raw_tasks
+
+        #print(tasks)
+
+        upcoming = [
+            task for task in tasks
+            if datetime.strptime(task["DatumUhrzeit"], "%Y-%m-%d %H:%M:%S") > now
+        ]
+        return jsonify(upcoming)
 
     return app
