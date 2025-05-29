@@ -6,3 +6,4 @@ Planned Features:
 - 404 page
 - search filter
 - daily tasks
+- delete all done tasks

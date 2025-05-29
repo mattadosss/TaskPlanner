@@ -102,4 +102,19 @@ def create_flask():
         ]
         return jsonify(upcoming)
 
+    @app.route("/api_today_tasks", methods=["GET"])
+    def today_tasks():
+        today = datetime.today().date()
+        tasks = db_handler.get_tasks()
+
+        tasks = json.loads(tasks)
+
+        today_tasks = []
+        for task in tasks:
+            task_date = datetime.strptime(task["DatumUhrzeit"], "%Y-%m-%d %H:%M:%S").date()
+            if task_date == today:
+                today_tasks.append(task)
+
+        return jsonify(today_tasks)
+
     return app

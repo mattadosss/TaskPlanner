@@ -22,6 +22,7 @@
             <input type="button" value="order by date" id="datebutton">
             <input type="button" value="undone Tasks" id="undone">
             <input type="button" value="upcoming Tasks" id="upcoming">
+            <input type="button" value="today Tasks" id="today">
         </div>
     </div>
 
@@ -41,6 +42,7 @@
         const datebutton = document.getElementById("datebutton")
         const undone = document.getElementById("undone")
         const upcoming = document.getElementById("upcoming")
+        const today = document.getElementById("today")
         function renderTaskList(tasks) {
             taskdiv.replaceChildren();  // Clear the container
 
@@ -158,6 +160,14 @@
             console.log(task)
             renderTaskList(task);
         }
+        async function today_tasks() {
+            const url = `/api_today_tasks`;
+            console.log(url)
+            let result = await fetch(url);
+            let task = await result.json();
+            console.log(task)
+            renderTaskList(task);
+        }
 
 
         loadBlogPost();
@@ -165,6 +175,7 @@
         datebutton.addEventListener("click", taskBydate)
         undone.addEventListener("click", undone_tasks)
         upcoming.addEventListener("click", upcoming_tasks)
+        today.addEventListener("click", today_tasks)
     });
 
 
