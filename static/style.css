@@ -128,15 +128,60 @@ main {
     cursor: pointer;
 }
 
-.task-controls a:hover,
-.task-controls input[type="button"]:hover {
+.form-controls a:hover,
+.form-controls input[type="button"]:hover {
     background-color: #f0f0f0;
     transform: scale(1.03);
 }
 
-.task-controls a {
+.form-controls a {
     color: #5c1d91;
     font-weight: bold;
+}
+
+
+.form-controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+form input[type="text"],
+form input[type="datetime-local"],
+form input[type="submit"] {
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fdfdfd;
+}
+
+form input[type="submit"] {
+    background-color: #ff69b4;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+form input[type="submit"]:hover {
+    background-color: #ff4fa3;
+}
+
+.task {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid deeppink;
+    margin-top: 20px;
 }
 
 

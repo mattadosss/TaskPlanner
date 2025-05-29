@@ -32,7 +32,7 @@ def get_task_by_title(id):
     # If no results found
     if not rows:
         return {
-            "Titel": f'Task with ID "{id}" not found',
+            "Titel": f'Task with Title: "{id}" not found',
             "erledigt": "",
             "Beschreibung": "",
             "DatumUhrzeit": ""
