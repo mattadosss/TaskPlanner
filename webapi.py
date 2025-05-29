@@ -65,6 +65,12 @@ def create_flask():
         id = args.get("id")
         result = db_handler.delete_task(id)
         return jsonify(result)
+
+    @app.route("/api_delete_done_task")
+    def api_delete_done_task():
+        result = db_handler.delete_done_tasks()
+        return jsonify(result)
+
     @app.route("/api_update_task", methods=['PUT'])
     def api_update_task():
         id = request.form.get("id")

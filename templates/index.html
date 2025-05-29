@@ -23,6 +23,7 @@
             <input type="button" value="undone Tasks" id="undone">
             <input type="button" value="upcoming Tasks" id="upcoming">
             <input type="button" value="today Tasks" id="today">
+            <input type="button" value="delete done Tasks" id="del_done">
         </div>
     </div>
 
@@ -43,6 +44,8 @@
         const undone = document.getElementById("undone")
         const upcoming = document.getElementById("upcoming")
         const today = document.getElementById("today")
+        const del_done = document.getElementById("del_done")
+
         function renderTaskList(tasks) {
             taskdiv.replaceChildren();  // Clear the container
 
@@ -152,6 +155,7 @@
             console.log(task)
             renderTaskList(task);
         }
+
         async function upcoming_tasks() {
             const url = `/api_upcoming_tasks`;
             console.log(url)
@@ -160,6 +164,7 @@
             console.log(task)
             renderTaskList(task);
         }
+
         async function today_tasks() {
             const url = `/api_today_tasks`;
             console.log(url)
@@ -169,6 +174,19 @@
             renderTaskList(task);
         }
 
+        async function delete_done() {
+            const confirmed = confirm("Are you sure you want to delete all done tasks?");
+            if (!confirmed) {
+                return;
+            }
+            const url = `/api_delete_done_task`;
+            console.log(url)
+            let result = await fetch(url);
+            let task = await result.json();
+            console.log(task)
+            loadBlogPost()
+        }
+
 
         loadBlogPost();
         refreshButton.addEventListener('click', loadBlogPost)
@@ -176,6 +194,7 @@
         undone.addEventListener("click", undone_tasks)
         upcoming.addEventListener("click", upcoming_tasks)
         today.addEventListener("click", today_tasks)
+        del_done.addEventListener("click", delete_done)
     });
 
 

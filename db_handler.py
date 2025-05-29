@@ -157,6 +157,31 @@ def delete_task(id):
             "message": f"Task with ID {id} was deleted."
         }
 
+def delete_done_tasks():
+
+    try:
+        # Use a raw SQL DELETE statement
+        session.execute(sa.text("DELETE FROM task WHERE erledigt = 1"))
+        session.commit()  # Commit the transaction
+    except Exception as e:
+        session.rollback()  # Rollback in case of error
+        print(f"Error deleting task: {e}")
+
+    if id is None:
+        no_entry_json = {
+            "Titel": f'Task with ID {id} not found',
+            "erledigt": "",
+            "Beschreibung": "",
+            "DatumUhrzeit": ""
+        }
+        return no_entry_json
+    else:
+        return {
+            "success": True,
+            "message": f"All done Tasks deleted"
+        }
+
+
 
 def get_task_by_date(date_string):
     query = sa.text('''
