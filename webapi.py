@@ -3,6 +3,7 @@ from flask import request, jsonify
 import db_handler
 from datetime import datetime
 import json
+import delete_after
 
 
 def create_flask():
@@ -11,6 +12,7 @@ def create_flask():
 
     @app.route("/")
     def on_home():
+        delete_after.clean_old_tasks()
         return flask.render_template("index.html")
 
     @app.route("/get_task")
@@ -91,6 +93,7 @@ def create_flask():
         erledigt = args.get("erledigt")
         #print(id, erledigt)
         result = db_handler.done_task(id, erledigt)
+        delete_after.parse(id, erledigt)
         return jsonify(result)
 
     @app.route("/api_upcoming_tasks", methods=["GET"])
