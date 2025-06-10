@@ -27,6 +27,10 @@ def create_flask():
     def on_update_task():
         return flask.render_template("update_task.html")
 
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return flask.render_template('404.html'), 404
+
     @app.route("/api_get_tasks")
     def api_get_tasks():
         return db_handler.get_tasks()
@@ -125,5 +129,7 @@ def create_flask():
                 today_tasks.append(task)
 
         return jsonify(today_tasks)
+
+
 
     return app
