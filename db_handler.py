@@ -14,8 +14,9 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
-def get_tasks():
-    result = session.execute(sa.text("SELECT * FROM task"))
+def get_tasks(user_id):
+    query = sa.text("SELECT * FROM task WHERE User_ID = :user_id")
+    result = session.execute(query, {'user_id': {user_id}})
     rows = result.fetchall()
     json_data = [dict(row._mapping) for row in rows]
 
@@ -23,10 +24,10 @@ def get_tasks():
     json_string = json.dumps(json_data, indent=2, default=str)
 
     return json_string
-def get_task_by_title(id):
+def get_task_by_title(id, user_id):
     # Use parameterized LIKE query to prevent SQL injection
-    query = sa.text('SELECT * FROM task WHERE task.Titel LIKE :pattern')
-    result = session.execute(query, {'pattern': f"%{id}%"})
+    query = sa.text('SELECT * FROM task WHERE task.Titel LIKE :pattern AND User_ID = :user_id')
+    result = session.execute(query, {'pattern': f"%{id}%", 'user_id': {user_id}})
     rows = result.fetchall()
 
     # If no results found
@@ -46,10 +47,10 @@ def get_task_by_title(id):
 
     return json.dumps(json_data, indent=2, default=str)
 
-def get_task_by_id(id):
+def get_task_by_id(id, user_id):
     # Use parameterized LIKE query to prevent SQL injection
-    query = sa.text('SELECT * FROM task WHERE task.Task_ID LIKE :pattern')
-    result = session.execute(query, {'pattern': f"%{id}%"})
+    query = sa.text('SELECT * FROM task WHERE task.Task_ID LIKE :pattern AND User_ID = :user_id')
+    result = session.execute(query, {'pattern': f"%{id}%", 'user_id': f'{user_id}'})
     rows = result.fetchall()
 
     # If no results found
@@ -71,36 +72,39 @@ def get_task_by_id(id):
 
 
 
-def create_task(erledigt, titel, beschreibung, datumUhrzeit):
-    query = sa.text("""
-            INSERT INTO Task (erledigt, Titel, Beschreibung, DatumUhrzeit)
-            values (
-                :erledigt,
-                :titel,
-                :beschreibung,
-                :datumUhrzeit
-           )
-        """)
 
-    sess = session.execute(query, {
+def create_task(erledigt, titel, beschreibung, datumUhrzeit, user_id):
+    query = sa.text("""
+        INSERT INTO Task (erledigt, Titel, Beschreibung, DatumUhrzeit, User_ID)
+        VALUES (
+            :erledigt,
+            :titel,
+            :beschreibung,
+            :datumUhrzeit,
+            :user_id
+        )
+    """)
+
+    session.execute(query, {
         'erledigt': erledigt,
         'titel': titel,
         'beschreibung': beschreibung,
-        'datumUhrzeit': datumUhrzeit
+        'datumUhrzeit': datumUhrzeit,
+        'user_id': user_id
     })
 
     session.commit()
 
-    answer = {
-            "Titel": f'{titel}',
-            "erledigt": f'{erledigt}',
-            "Beschreibung": f'{beschreibung}',
-            "DatumUhrzeit": f'{datumUhrzeit}'
-        }
-    return answer
+    return {
+        "Titel": titel,
+        "erledigt": erledigt,
+        "Beschreibung": beschreibung,
+        "DatumUhrzeit": datumUhrzeit,
+        "User_ID": user_id
+    }
 
 
-def update_task(id, erledigt, titel, beschreibung, datumUhrzeit):
+def update_task(id, erledigt, titel, beschreibung, datumUhrzeit, user_id):
     query = sa.text("""
             UPDATE task
             SET 
@@ -108,7 +112,8 @@ def update_task(id, erledigt, titel, beschreibung, datumUhrzeit):
             Titel = :titel,
             Beschreibung = :beschreibung,
             DatumUhrzeit = :datumUhrzeit
-            WHERE Task_ID = :id;
+            WHERE Task_ID = :id
+            AND User_ID = :user_id;
            
         """)
 
@@ -117,7 +122,8 @@ def update_task(id, erledigt, titel, beschreibung, datumUhrzeit):
         'titel': titel,
         'beschreibung': beschreibung,
         'datumUhrzeit': datumUhrzeit,
-        'id': id
+        'id': id,
+        'user_id': user_id
     })
 
     #print(sess)
@@ -128,16 +134,17 @@ def update_task(id, erledigt, titel, beschreibung, datumUhrzeit):
             "Titel": f'{titel}',
             "erledigt": f'{erledigt}',
             "Beschreibung": f'{beschreibung}',
-            "DatumUhrzeit": f'{datumUhrzeit}'
+            "DatumUhrzeit": f'{datumUhrzeit}',
+            "user_id": f'{user_id}'
         }
     return answer
 
-def delete_task(id):
+def delete_task(id, user_id):
     print(id)
 
     try:
         # Use a raw SQL DELETE statement
-        session.execute(sa.text("DELETE FROM task WHERE Task_ID = :task_id"), {'task_id': id})
+        session.execute(sa.text("DELETE FROM task WHERE Task_ID = :task_id AND User_ID = :user_id"), {'task_id': id, 'user_id': user_id})
         session.commit()  # Commit the transaction
     except Exception as e:
         session.rollback()  # Rollback in case of error
@@ -157,11 +164,11 @@ def delete_task(id):
             "message": f"Task with ID {id} was deleted."
         }
 
-def delete_done_tasks():
+def delete_done_tasks(user_id):
 
     try:
         # Use a raw SQL DELETE statement
-        session.execute(sa.text("DELETE FROM task WHERE erledigt = 1"))
+        session.execute(sa.text("DELETE FROM task WHERE erledigt = 1 AND User_ID = :user_id"), {'user_id': user_id})
         session.commit()  # Commit the transaction
     except Exception as e:
         session.rollback()  # Rollback in case of error
@@ -183,13 +190,14 @@ def delete_done_tasks():
 
 
 
-def get_task_by_date(date_string):
+def get_task_by_date(date_string, user_id):
     query = sa.text('''
         SELECT * FROM task
         WHERE DATE(task.DatumUhrzeit) = :date
+        AND User_ID = :user_id
         ORDER BY task.DatumUhrzeit ASC
     ''')
-    result = session.execute(query, {'date': date_string})
+    result = session.execute(query, {'date': date_string, 'user_id': user_id})
     rows = result.fetchall()
 
     if not rows:
@@ -203,12 +211,13 @@ def get_task_by_date(date_string):
 
 
 
-def get_undone_tasks():
+def get_undone_tasks(user_id):
     query = sa.text('''
         SELECT * FROM task
-        WHERE erledigt = 0;
+        WHERE erledigt = 0
+        AND User_ID = :user_id;
     ''')
-    result = session.execute(query)
+    result = session.execute(query, {'user_id': user_id})
     rows = result.fetchall()
 
     if not rows:
@@ -221,12 +230,13 @@ def get_undone_tasks():
     return json.dumps(json_data, indent=2, default=str)
 
 
-def get_tasks_order_by_date():
+def get_tasks_order_by_date(user_id):
     query = sa.text('''
         SELECT * FROM task
+        WHERE User_ID = :user_id
         ORDER BY task.DatumUhrzeit ASC
     ''')
-    result = session.execute(query)
+    result = session.execute(query, {'user_id': user_id})
     rows = result.fetchall()
 
 
@@ -234,16 +244,17 @@ def get_tasks_order_by_date():
     return json.dumps(json_data, indent=2, default=str)
 
 
-def done_task(id, erledigt):
+def done_task(id, erledigt, user_id):
     query = sa.text("""
                 UPDATE task
                 SET 
                 erledigt = :erledigt
-                WHERE Task_ID = :id;
+                WHERE Task_ID = :id
+                AND User_ID = :user_id;
 
             """)
 
-    sess = session.execute(query, {'erledigt': erledigt, 'id': id})
+    sess = session.execute(query, {'erledigt': erledigt, 'id': id, 'user_id': user_id})
 
     # print(sess)
 

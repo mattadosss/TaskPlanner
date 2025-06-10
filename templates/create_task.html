@@ -89,6 +89,7 @@
             const Beschreibung = form_data.get("Beschreibung");
             const DatumUhrzeit = form_data.get("DatumUhrzeit");
 
+            form.reset();
             await loadTask(erledigt, Titel, Beschreibung, DatumUhrzeit);  // pass the ID to loadTask
         });
 
