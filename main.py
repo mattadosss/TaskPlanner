@@ -22,5 +22,6 @@ finally:
 
 #db_handler.create_task(0, "besen", "yesen", "2024-05-08 01:28:54")
 #db_handler.delete_task(34)
+#print(db_handler.auth_user("admin2", "1234"))
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

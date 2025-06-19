@@ -264,3 +264,20 @@ def done_task(id, erledigt, user_id):
         "Titel": f'{id}'
     }
     return answer
+
+def auth_user(username, password):
+    query = sa.text('''
+            SELECT user.User_ID FROM user
+            WHERE username = :username
+            AND password = :password
+        ''')
+
+    result = session.execute(query, {'username': username, 'password': password}).fetchone()
+
+    if result:
+        user_id = result._mapping['User_ID']
+        #print(f"User found: {user_id}")
+        return user_id
+    else:
+        #print("No user found.")
+        return 0

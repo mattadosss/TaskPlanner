@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+<main>
+    <h1>Login</h1>
+    <form id="login_form" action="#" method="POST">
+        <input type="text" name="username" placeholder="username" id="username"><br>
+        <input type="text" name="password" placeholder="password" id="password"><br>
+
+        <input type="submit" value="Login">
+    </form>
+</main>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const loginForm = document.forms.login_form;
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();  // prevent page reload
+
+            const form = document.getElementById("login_form");
+            const form_data = new FormData(form);
+
+            const username = form_data.get("username");
+            const password = form_data.get("password");
+
+            await sendLogin(username, password);  // pass the ID to loadTask
+        });
+
+        async function sendLogin(username, password) {
+            const formData = new FormData()
+            formData.append("username", username)
+            formData.append("password", password)
+
+            console.log(formData)
+
+
+        }
+    })
+
+
+</script>
+</html>

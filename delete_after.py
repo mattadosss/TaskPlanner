@@ -1,6 +1,7 @@
 import csv
 from datetime import datetime, timedelta
 import db_handler
+import webapi
 
 CSV = 'tasks_to_delete.csv'
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -27,7 +28,7 @@ def clean_old_tasks():
 
     for task in tasks:
         if is_older_than_24_hours(task['DatumUhrzeit']):
-            result = db_handler.delete_task(task["id"])
+            result = db_handler.delete_task(task["id"], webapi.is_logged_in())
             print(result)
         else:
             remaining_tasks.append(task)
