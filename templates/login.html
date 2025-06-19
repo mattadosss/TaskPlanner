@@ -17,31 +17,42 @@
 </main>
 </body>
 <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        const loginForm = document.forms.login_form;
+  document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.forms.login_form;
 
-        loginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();  // prevent page reload
+    loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-            const form = document.getElementById("login_form");
-            const form_data = new FormData(form);
+        const form = document.getElementById("login_form");
+        const formData = new FormData(form);
 
-            const username = form_data.get("username");
-            const password = form_data.get("password");
+        const username = formData.get("username");
+        const password = formData.get("password");
 
-            await sendLogin(username, password);  // pass the ID to loadTask
+        await sendLogin(username, password);
+    });
+
+    async function sendLogin(username, password) {
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+
+        const response = await fetch("/api_login", {
+            method: "POST",
+            body: formData,
         });
 
-        async function sendLogin(username, password) {
-            const formData = new FormData()
-            formData.append("username", username)
-            formData.append("password", password)
+        const data = await response.json();
+        console.log(data);
 
-            console.log(formData)
-
-
+        if (data.success) {
+            window.location.href = "/"; // redirect manually
+        } else {
+            alert("Login failed: " + data.message);
         }
-    })
+    }
+});
+
 
 
 </script>

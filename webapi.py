@@ -1,25 +1,33 @@
 import flask
-from flask import request, jsonify, session
+from flask import request, jsonify, session, redirect, url_for
 import db_handler
 from datetime import datetime
 import json
 import delete_after
 
 
-def is_logged_in():
-    id = session.get("user_id")
-    print(id)
+def is_logged_in1():
     return 1
 def create_flask():
     app = flask.Flask(__name__)
     app.secret_key = "Task Planner"
 
-
+    def is_logged_in():
+        id = session.get("user_id")
+        print(id)
+        if id is not None:
+            return id
+        else:
+            print("no user id in session storage")
+            return redirect(url_for("on_login"))
 
 
     @app.route("/")
     def on_home():
-        #is_logged_in()
+        auth = is_logged_in()
+        if isinstance(auth, flask.Response):  # redirect object
+            return auth
+        print(id)
         delete_after.clean_old_tasks()
         return flask.render_template("index.html")
 
@@ -153,6 +161,21 @@ def create_flask():
 
         return jsonify(today_tasks)
 
+    @app.route("/api_login", methods=["POST"])
+    def on_api_login():
+        username = request.form.get("username")
+        password = request.form.get("password")
+        user_id = db_handler.auth_user(username, password)
 
+        if user_id == 0:
+            return jsonify({"success": False, "message": "User not found"}), 401
+        else:
+            session["user_id"] = user_id
+            return jsonify({"success": True, "user_id": user_id})
+
+    @app.route("/logout")
+    def logout():
+        session.pop('user_id', None)
+        return redirect(url_for('on_login'))
 
     return app

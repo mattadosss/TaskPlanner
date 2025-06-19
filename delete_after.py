@@ -28,7 +28,7 @@ def clean_old_tasks():
 
     for task in tasks:
         if is_older_than_24_hours(task['DatumUhrzeit']):
-            result = db_handler.delete_task(task["id"], webapi.is_logged_in())
+            result = db_handler.delete_task(task["id"], webapi.is_logged_in1())
             print(result)
         else:
             remaining_tasks.append(task)

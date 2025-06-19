@@ -276,8 +276,8 @@ def auth_user(username, password):
 
     if result:
         user_id = result._mapping['User_ID']
-        #print(f"User found: {user_id}")
+        print(f"User found: {user_id}")
         return user_id
     else:
-        #print("No user found.")
+        print("No user found.")
         return 0
