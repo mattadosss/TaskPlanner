@@ -40,3 +40,28 @@ def delete_done_tasks(user_id):
             "message": f"All done Tasks deleted"
         }
 
+def delete_task(id):
+    print(id)
+
+    try:
+        # Use a raw SQL DELETE statement
+        session.execute(sa.text("DELETE FROM task WHERE Task_ID = :task_id"),
+                        {'task_id': id, 'user_id': user_id})
+        session.commit()  # Commit the transaction
+    except Exception as e:
+        session.rollback()  # Rollback in case of error
+        print(f"Error deleting task: {e}")
+
+    if id is None:
+        no_entry_json = {
+            "Titel": f'Task with ID {id} not found',
+            "erledigt": "",
+            "Beschreibung": "",
+            "DatumUhrzeit": ""
+        }
+        return no_entry_json
+    else:
+        return {
+            "success": True,
+            "message": f"Task with ID {id} was deleted."
+        }
