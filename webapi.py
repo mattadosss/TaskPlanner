@@ -1,6 +1,6 @@
 import flask
 from flask import request, jsonify, session, redirect, url_for
-import db_handler
+from db_handler import db_handler, crud_db, filter_db, user_db
 from datetime import datetime
 import json
 import delete_after
@@ -54,31 +54,31 @@ def create_flask():
     @app.route("/api_get_tasks")
     def api_get_tasks():
         user_id = is_logged_in()
-        return db_handler.get_tasks(user_id)
+        return crud_db.get_tasks(user_id)
 
     @app.route("/api_get_tasks_by_date")
     def api_get_tasks_by_date():
         user_id = is_logged_in()
-        return db_handler.get_tasks_order_by_date(user_id)
+        return filter_db.get_tasks_order_by_date(user_id)
 
     @app.route("/api_get_undone_tasks")
     def api_get_erledigt():
         user_id = is_logged_in()
-        return db_handler.get_undone_tasks(user_id)
+        return filter_db.get_undone_tasks(user_id)
 
     @app.route("/api_get_task_by_title", methods=['GET'])
     def api_get_task_by_title():
         user_id = is_logged_in()
         args = request.args
         title = args.get("title")
-        return db_handler.get_task_by_title(title, user_id)
+        return filter_db.get_task_by_title(title, user_id)
 
     @app.route("/api_get_task_by_id", methods=['GET'])
     def api_get_task_by_id():
         user_id = is_logged_in()
         args = request.args
         id = args.get("id")
-        return db_handler.get_task_by_id(id, user_id)
+        return filter_db.get_task_by_id(id, user_id)
 
     @app.route("/api_create_task", methods=['POST'])
     def api_create_task():
@@ -88,7 +88,7 @@ def create_flask():
         datumUhrzeit = request.form.get("DatumUhrzeit")
 
         user_id = is_logged_in()
-        result = db_handler.create_task(erledigt, titel, beschreibung, datumUhrzeit, user_id)
+        result = crud_db.create_task(erledigt, titel, beschreibung, datumUhrzeit, user_id)
         return jsonify(result)
 
     @app.route("/api_delete_task",  methods=['DELETE'])
@@ -96,7 +96,7 @@ def create_flask():
         args = request.args
         id = args.get("id")
         user_id = is_logged_in()
-        result = db_handler.delete_task(id, user_id)
+        result = crud_db.delete_task(id, user_id)
         return jsonify(result)
 
     @app.route("/api_delete_done_task")
@@ -116,7 +116,7 @@ def create_flask():
         print(id)
         print(erledigt)
         print(titel)
-        result = db_handler.update_task(id, erledigt, titel, beschreibung, datumUhrzeit, user_id)
+        result = crud_db.update_task(id, erledigt, titel, beschreibung, datumUhrzeit, user_id)
         return jsonify(result)
 
     @app.route("/api_done_task")
@@ -126,7 +126,7 @@ def create_flask():
         erledigt = args.get("erledigt")
         user_id = is_logged_in()
         #print(id, erledigt)
-        result = db_handler.done_task(id, erledigt, user_id)
+        result = filter_db.done_task(id, erledigt, user_id)
         delete_after.parse(id, erledigt)
         return jsonify(result)
 
@@ -134,7 +134,7 @@ def create_flask():
     def upcoming_tasks():
         now = datetime.now()
         user_id = is_logged_in()
-        raw_tasks = db_handler.get_tasks(user_id)
+        raw_tasks = crud_db.get_tasks(user_id)
         tasks = json.loads(raw_tasks) if isinstance(raw_tasks, str) else raw_tasks
 
         #print(tasks)
@@ -149,7 +149,7 @@ def create_flask():
     def today_tasks():
         user_id = is_logged_in()
         today = datetime.today().date()
-        tasks = db_handler.get_tasks(user_id)
+        tasks = crud_db.get_tasks(user_id)
 
         tasks = json.loads(tasks)
 
@@ -165,7 +165,7 @@ def create_flask():
     def on_api_login():
         username = request.form.get("username")
         password = request.form.get("password")
-        user_id = db_handler.auth_user(username, password)
+        user_id = user_db.auth_user(username, password)
 
         if user_id == 0:
             return jsonify({"success": False, "message": "User not found"}), 401

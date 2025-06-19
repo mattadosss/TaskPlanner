@@ -154,6 +154,7 @@ form {
 }
 
 form input[type="text"],
+form input[type="password"],
 form input[type="datetime-local"],
 form input[type="submit"] {
     padding: 8px;
