@@ -47,6 +47,10 @@ def create_flask():
     def on_login():
         return flask.render_template("login.html")
 
+    @app.route("/create_account")
+    def create_account():
+        return flask.render_template("create_user.html")
+
     @app.errorhandler(404)
     def page_not_found(e):
         return flask.render_template('404.html'), 404
@@ -177,5 +181,14 @@ def create_flask():
     def logout():
         session.pop('user_id', None)
         return redirect(url_for('on_login'))
+
+    @app.route("/api_create_user", methods=["POST"])
+    def create_user():
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        result = user_db.create_user(username, password)
+
+        return jsonify(result)
 
     return app

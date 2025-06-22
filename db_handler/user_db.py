@@ -29,3 +29,33 @@ def auth_user(username, password):
     else:
         print("No user found.")
         return 0
+
+
+def create_user(username, password):
+    check_query = sa.text("SELECT User_ID FROM user WHERE username = :username")
+    result = session.execute(check_query, {'username': username}).fetchone()
+
+    if result:
+        return {
+            'success': False,
+            'message': 'Username already exists'
+        }
+
+    insert_query = sa.text("""
+        INSERT INTO user (username, password)
+        VALUES (:username, :password)
+    """)
+
+    session.execute(insert_query, {
+        'username': username,
+        'password': password
+    })
+    session.commit()
+
+
+    return {
+        'success': True,
+        'password': password,
+        'username': username
+    }
+

@@ -2,19 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Create Account</title>
     <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
 <main>
-    <h1>Login</h1>
+    <h1>Create Account</h1>
     <form id="login_form" action="#" method="POST">
         <input type="text" name="username" placeholder="username" id="username"><br>
         <input type="password" name="password" placeholder="password" id="password"><br>
 
-        <input type="submit" value="Login">
+        <input type="submit" value="Create Account">
     </form>
-    <a href="/create_account">Create Account</a>
 </main>
 </body>
 <script>
@@ -38,7 +37,7 @@
         formData.append("username", username);
         formData.append("password", password);
 
-        const response = await fetch("/api_login", {
+        const response = await fetch("/api_create_user", {
             method: "POST",
             body: formData,
         });
@@ -47,9 +46,9 @@
         console.log(data);
 
         if (data.success) {
-            window.location.href = "/"; // redirect manually
+            window.location.href = "/login"; // redirect manually
         } else {
-            alert("Login failed: " + data.message);
+            alert("user creation failed: " + data.message);
         }
     }
 });
