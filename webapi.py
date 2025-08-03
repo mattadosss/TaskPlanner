@@ -58,9 +58,9 @@ def create_flask():
     @app.route("/api_get_tasks")
     def api_get_tasks():
         user_id = is_logged_in()
-        print(crud_db.get_tasks(user_id))
+        #print(crud_db.get_tasks(user_id))
         result = crud_db.get_tasks(user_id)
-        print(result)
+        #print(result)
         return jsonify(result)
 
     @app.route("/api_get_tasks_by_date")

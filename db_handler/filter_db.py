@@ -2,8 +2,18 @@ from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
 import sqlalchemy as sa
 import json
+from configparser import ConfigParser
 
-engine = create_engine("mysql+pymysql://root:hello1234@localhost/task_planner")
+config = ConfigParser()
+config.read('db_handler/config.ini')
+
+db_user = config['database']['username']
+db_password = config['database']['password']
+db_host = config['database']['host']
+db_name = config['database']['database']
+
+# Create engine
+engine = create_engine(f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}")
 
 
 metadata = MetaData()
