@@ -65,3 +65,22 @@ def delete_task(id):
             "success": True,
             "message": f"Task with ID {id} was deleted."
         }
+def done_task(id, erledigt):
+    query = sa.text("""
+                UPDATE task
+                SET 
+                erledigt = :erledigt
+                WHERE Task_ID = :id;
+
+            """)
+
+    sess = session.execute(query, {'erledigt': erledigt, 'id': id})
+
+    # print(sess)
+
+    session.commit()
+
+    answer = {
+        "Titel": f'{id}'
+    }
+    return answer

@@ -10,7 +10,7 @@ function renderTaskList(tasks) {
     taskdiv.replaceChildren();  // Clear the container
 
     tasks.forEach(task => {
-        console.log(task);
+        //console.log(task);
 
         const taskContainer = document.createElement('div');
         taskContainer.classList.add('task');
@@ -28,19 +28,29 @@ function renderTaskList(tasks) {
         checkbox.type = "checkbox";
         checkbox.name = "erledigt";
         checkbox.id = "erledigt";
+        console.log(task.erledigt)
         if (task.erledigt === 1) {
             checkbox.checked = true
         }
         checkbox.addEventListener('change', () => {
-            if (checkbox.checked === true) {
-                const url = `/api_done_task?id=${task.Task_ID}&erledigt=1`;
-                let result = fetch(url);
-                //let task = result.json();
-            } else {
-                const url = `/api_done_task?id=${task.Task_ID}&erledigt=0`;
-                let result = fetch(url);
-            }
+            const erledigtValue = checkbox.checked ? 1 : 0;
+            const url = `/api_done_task`;
+
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: task.Task_ID,
+                    erledigt: erledigtValue
+                })
+            })
+                .then(response => response.json())
+                .then(data => console.log('Task updated:', data))
+                .catch(error => console.error('Error:', error));
         });
+
 
         const labelText = document.createTextNode(" Erledigt");
         label.appendChild(checkbox);
@@ -94,7 +104,7 @@ async function loadBlogPost() {
     const url = "/api_get_tasks";
     let result = await fetch(url);
     let task = await result.json();
-    console.log(task)
+    //console.log(task)
     renderTaskList(task);
 }
 

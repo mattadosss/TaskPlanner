@@ -16,14 +16,15 @@ session = Session()
 
 def get_tasks(user_id):
     query = sa.text("SELECT * FROM task WHERE User_ID = :user_id")
-    result = session.execute(query, {'user_id': {user_id}})
+
+    result = session.execute(query, {'user_id': user_id})
     rows = result.fetchall()
-    json_data = [dict(row._mapping) for row in rows]
 
-    # Convert to JSON string (if needed)
-    json_string = json.dumps(json_data, indent=2, default=str)
+    tasks = [dict(row._mapping) for row in rows]
 
-    return json_string
+    print("Tasks:", tasks)  # For debugging, can remove in production
+
+    return tasks
 
 
 

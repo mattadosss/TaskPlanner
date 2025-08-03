@@ -14,7 +14,7 @@ def create_flask():
 
     def is_logged_in():
         id = session.get("user_id")
-        print(id)
+        #print(id)
         if id is not None:
             return id
         else:
@@ -58,7 +58,10 @@ def create_flask():
     @app.route("/api_get_tasks")
     def api_get_tasks():
         user_id = is_logged_in()
-        return crud_db.get_tasks(user_id)
+        print(crud_db.get_tasks(user_id))
+        result = crud_db.get_tasks(user_id)
+        print(result)
+        return jsonify(result)
 
     @app.route("/api_get_tasks_by_date")
     def api_get_tasks_by_date():
@@ -123,15 +126,16 @@ def create_flask():
         result = crud_db.update_task(id, erledigt, titel, beschreibung, datumUhrzeit, user_id)
         return jsonify(result)
 
-    @app.route("/api_done_task")
+    @app.route("/api_done_task", methods=["PUT"])
     def api_done_task():
-        args = request.args
-        id = args.get("id")
-        erledigt = args.get("erledigt")
+        data = request.get_json()
+        task_id = data.get("id")
+        erledigt = data.get("erledigt")
+        print(erledigt)
         user_id = is_logged_in()
-        #print(id, erledigt)
-        result = filter_db.done_task(id, erledigt, user_id)
-        delete_after.parse(id, erledigt)
+        result = db_handler.done_task(task_id, erledigt)
+        delete_after.parse(task_id, erledigt)
+
         return jsonify(result)
 
     @app.route("/api_upcoming_tasks", methods=["GET"])
