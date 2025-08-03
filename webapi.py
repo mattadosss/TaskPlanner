@@ -143,27 +143,26 @@ def create_flask():
         now = datetime.now()
         user_id = is_logged_in()
         raw_tasks = crud_db.get_tasks(user_id)
-        tasks = json.loads(raw_tasks) if isinstance(raw_tasks, str) else raw_tasks
 
-        #print(tasks)
+        tasks = json.loads(raw_tasks) if isinstance(raw_tasks, str) else raw_tasks
 
         upcoming = [
             task for task in tasks
-            if datetime.strptime(task["DatumUhrzeit"], "%Y-%m-%d %H:%M:%S") > now
+            if task["DatumUhrzeit"] > now  # No need to parse datetime
         ]
+
         return jsonify(upcoming)
 
     @app.route("/api_today_tasks", methods=["GET"])
     def today_tasks():
         user_id = is_logged_in()
         today = datetime.today().date()
-        tasks = crud_db.get_tasks(user_id)
 
-        tasks = json.loads(tasks)
+        tasks = crud_db.get_tasks(user_id)  # Expected to return list of dicts with datetime objects
 
         today_tasks = []
         for task in tasks:
-            task_date = datetime.strptime(task["DatumUhrzeit"], "%Y-%m-%d %H:%M:%S").date()
+            task_date = task["DatumUhrzeit"].date()  # No need to parse a datetime object
             if task_date == today:
                 today_tasks.append(task)
 
